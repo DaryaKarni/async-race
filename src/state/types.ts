@@ -9,12 +9,15 @@ export interface Winner {
   wins: number,
   time: number,
 }
-export interface RaceResult {
-  
-}
+
 export type View = 'garage' | 'winners';
 export interface State {
   view: View,
   garagePage: number,
   winnerPage: number,
+}
+export interface Car {
+  name: string,
+  color: string,
+  id: number,
 }

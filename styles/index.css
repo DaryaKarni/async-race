@@ -53,6 +53,29 @@ body {
   font-family: inherit;
 }
 
+.start-button {
+  background-color: transparent;
+  color: rgb(113, 188, 90);
+  border: 2px solid rgb(113, 188, 90);
+}
+
+.stop-button {
+  background-color: transparent;
+  color: rgb(196, 0, 0);
+  border: 2px solid rgb(196, 0, 0);
+}
+
+.mini-disabled {
+  color: rgb(74, 74, 74);
+  border: 2px solid rgb(74, 74, 74);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
 .blue-button {
   background-color: rgb(176, 183, 255);
   border-bottom: 4px solid rgb(90, 98, 188);
@@ -61,6 +84,14 @@ body {
 .green-button {
   background-color: rgb(185, 255, 176);
   border-bottom: 4px solid rgb(113, 188, 90);
+}
+
+.road {
+  height: 2px;
+  width: 100%;
+  border: 2px dashed white;
+  box-sizing: border-box;
+  margin-bottom: 1rem;
 }
 
 .hidden {
