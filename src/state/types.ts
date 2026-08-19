@@ -26,3 +26,11 @@ export interface Car {
   color: string,
   id: number,
 }
+export interface Data {
+  items: Car[],
+  count: string,
+}
+export interface DataParameters{
+  name: string,
+  color: string,
+}

@@ -1,7 +1,7 @@
-import { getCars } from "../../api/garage"
+import { createCar, getCars, removeCar } from "../../api/garage"
 import { store } from "../../state/app-state";
-import { State } from "../../state/types";
-import { renderCarTrack } from "./car-card";
+import { Car, State } from "../../state/types";
+import { removeCarTrack, renderCarTrack } from "./car-card";
 
 export async function updateGarage(): Promise<void> {
   const object = await getCars();
@@ -21,7 +21,6 @@ export async function updateGarage(): Promise<void> {
     countText.textContent = String(count);
   }
 }
-
 const panel = document.querySelector('#panel');
 const inputCreate = panel?.querySelector('#create-input');
 const inputUpdate = panel?.querySelector('#update-input');
@@ -86,7 +85,7 @@ function inputHandler(event: Event): State | undefined{
       }
     });
   };
-function panelClickHandler(event: Event): void{
+async function panelClickHandler(event: Event): Promise<void>{
   const button = event.target;
   if(!(button instanceof HTMLButtonElement)) return;
   const state: State = store.getState();
@@ -96,26 +95,47 @@ function panelClickHandler(event: Event): void{
         inputCreate.value = '';
         inputCreate.dispatchEvent(new Event('input', {bubbles: true}));
       }
-      renderCarTrack({
+      const car: Car | undefined = await createCar({
         name: state.createInput,
         color: state.createColor,
-        id: state.carsCount + 1,
       });
-    }
+      if(car){
+        renderCarTrack(car);
+      }
+    } 
     case "update": {
-      
+      //
     }
     case "race": {
-
+      //
     }
     case "reset": {
-
+      //
     }
     case "generate-cars": {
-
+      //
     }
     default: {
-
+      //
+    }
+  }
+}
+async function raceClickHandler(event: Event): Promise<void>{
+  const button = event.target;
+  if(!(button instanceof HTMLButtonElement)) return;
+  switch(button.dataset.action){
+    case "select": {
+      //
+    }
+    case "remove": {
+      await removeCar(Number(button.id));
+      removeCarTrack(button.id);
+    }
+    case "drive": {
+      //
+    }
+    case "stop": {
+      //
     }
   }
 }
@@ -123,7 +143,11 @@ export function initGarageControls(): void {
   const panel = document.querySelector('#panel');
   if(!panel) return;
   panel.addEventListener('input', debounce(inputHandler, 50));
-  panel.addEventListener('click', panelClickHandler)
+  panel.addEventListener('click', panelClickHandler);
+
+  const carsContainer = document.querySelector('.cars-container');
+  if(!carsContainer) return;
+  carsContainer.addEventListener('click', raceClickHandler);
 }
 
 export function switchToGarage(){
