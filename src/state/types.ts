@@ -1,4 +1,4 @@
-// Car, Winner, RaceResult interfaces
+//Car, Winner, RaceResult interfaces
 export interface Car {
   name: string,
   color: string,
@@ -15,6 +15,11 @@ export interface State {
   view: View,
   garagePage: number,
   winnerPage: number,
+  createInput: string,
+  updateInput: string,
+  createColor: string,
+  updateColor: string,
+  carsCount: number,
 }
 export interface Car {
   name: string,

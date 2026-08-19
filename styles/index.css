@@ -29,9 +29,8 @@ body {
 }
 .garage #panel .panel-row .color-button {
   width: 2rem;
-  padding: 0.5rem;
-  border: 4px solid rgb(80, 80, 80);
   border-radius: 0.3rem;
+  cursor: pointer;
 }
 
 #winners #winners-section {
@@ -51,18 +50,27 @@ body {
 .button {
   border-radius: 0.3rem;
   font-family: inherit;
+  cursor: pointer;
 }
 
 .start-button {
+  width: 1.5rem;
+  height: 1.5rem;
   background-color: transparent;
   color: rgb(113, 188, 90);
   border: 2px solid rgb(113, 188, 90);
 }
 
 .stop-button {
+  width: 1.5rem;
+  height: 1.5rem;
   background-color: transparent;
   color: rgb(196, 0, 0);
   border: 2px solid rgb(196, 0, 0);
+}
+
+.car-name {
+  margin-left: 1rem;
 }
 
 .mini-disabled {
@@ -76,6 +84,11 @@ body {
   gap: 0.3rem;
 }
 
+.car-model {
+  width: 4rem;
+  height: fit-content;
+}
+
 .blue-button {
   background-color: rgb(176, 183, 255);
   border-bottom: 4px solid rgb(90, 98, 188);
@@ -86,12 +99,23 @@ body {
   border-bottom: 4px solid rgb(113, 188, 90);
 }
 
+.engine-buttons {
+  width: fit-content;
+}
+
+.race {
+  display: flex;
+  gap: 1rem;
+}
+
 .road {
   height: 2px;
   width: 100%;
   border: 2px dashed white;
   box-sizing: border-box;
   margin-bottom: 1rem;
+  position: relative;
+  bottom: 1.5rem;
 }
 
 .hidden {
