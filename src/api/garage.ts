@@ -59,3 +59,23 @@ export async function removeCar(id: number): Promise<void>{
     console.log("Error in removing cars api:", error);
   }
 }
+
+export async function updateCar(id: number, data: DataParameters){
+  try{
+    const url = `${apiAddress}/garage/${id}`;
+    const response = await fetch (url, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+    if(!response.ok){
+      throw new Error(`HTTP error in update! status: ${response.status}`);
+    }
+    const newCar: Car = await response.json();
+    return newCar;
+  } catch(error){
+    console.log("Error in updating cars api:", error);
+  }
+}

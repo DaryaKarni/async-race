@@ -1,12 +1,16 @@
-import { createCar, getCars, removeCar } from "../../api/garage"
+import { createCar, getCars, removeCar, updateCar } from "../../api/garage"
+
 import { store } from "../../state/app-state";
 import { Car, State } from "../../state/types";
-import { removeCarTrack, renderCarTrack } from "./car-card";
+import { removeCarTrack, renderCarTrack, updateCarTrack } from "./car-card";
 
 export async function updateGarage(): Promise<void> {
   const object = await getCars();
   const cars = object.items;
   const count: number = Number(object.count);
+  store.dispatch((previousState) => {
+    return {...previousState, selectedId: null};
+  });
   for(const car of cars){
     renderCarTrack(car);
   }
@@ -85,57 +89,73 @@ function inputHandler(event: Event): State | undefined{
       }
     });
   };
+async function createCarHandler(state: State): Promise<void>{
+  if(inputCreate instanceof HTMLInputElement){
+    inputCreate.value = '';
+    inputCreate.dispatchEvent(new Event('input', {bubbles: true}));
+  }
+  const car: Car | undefined = await createCar({
+    name: state.createInput,
+    color: state.createColor,
+  });
+  if (car) renderCarTrack(car);
+}
+
 async function panelClickHandler(event: Event): Promise<void>{
   const button = event.target;
   if(!(button instanceof HTMLButtonElement)) return;
   const state: State = store.getState();
   switch(button.dataset.action){
     case "create": {
-      if(inputCreate instanceof HTMLInputElement){
-        inputCreate.value = '';
-        inputCreate.dispatchEvent(new Event('input', {bubbles: true}));
-      }
-      const car: Car | undefined = await createCar({
-        name: state.createInput,
-        color: state.createColor,
-      });
-      if(car){
-        renderCarTrack(car);
-      }
+      createCarHandler(state);
+      break;
     } 
     case "update": {
-      //
+      if(state.selectedId !== null){
+        const updatedCar = await updateCar(state.selectedId, {name: state.updateInput, color: state.updateColor});
+        if(updatedCar) updateCarTrack(updatedCar);
+        store.dispatch((previousState) => {
+          return {...previousState, selectedId: null};
+        });
+      }
+      break;
     }
     case "race": {
-      //
+      break;
     }
     case "reset": {
-      //
+      break;
     }
     case "generate-cars": {
-      //
+      break;
     }
     default: {
-      //
+      break;
     }
   }
 }
+
 async function raceClickHandler(event: Event): Promise<void>{
   const button = event.target;
   if(!(button instanceof HTMLButtonElement)) return;
   switch(button.dataset.action){
     case "select": {
-      //
+      store.dispatch((previousState) => {
+        console.log(button.id);
+        return {...previousState, selectedId: Number(button.id)};
+      });
+      break;
     }
     case "remove": {
       await removeCar(Number(button.id));
       removeCarTrack(button.id);
+      break;
     }
     case "drive": {
-      //
+      break;
     }
     case "stop": {
-      //
+      break;
     }
   }
 }
@@ -152,5 +172,8 @@ export function initGarageControls(): void {
 
 export function switchToGarage(){
   updateGarageState(store.getState());
+  store.dispatch((previousState) => {
+    return {...previousState, selectedId: null};
+  });
 }
 

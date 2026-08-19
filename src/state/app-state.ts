@@ -9,6 +9,7 @@ const dafaultState: State = {
   createColor: '#ffff',
   updateColor: '#ffff',
   carsCount: 0,
+  selectedId: null,
 }
 
 function createStore(state: State){

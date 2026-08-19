@@ -1,4 +1,4 @@
-import { Car } from "../../state/types";
+import { Car} from "../../state/types";
 
 export function renderCarTrack(car: Car): void{
 const container = document.querySelector('.cars-container');
@@ -30,4 +30,13 @@ container?.append(card);
 export function removeCarTrack(id: string){
   const card = document.querySelector(`#${CSS.escape(id)}`);
   card?.remove();
+}
+
+export function updateCarTrack(car: Car){
+  const id = car.id;
+  const card = document.querySelector(`#${CSS.escape(String(id))}`);
+  const carName = card?.querySelector(".car-name");
+  const carModel = card?.querySelector<SVGPathElement>(":scope path");
+  if(carName) carName.textContent = car.name;
+  if(carModel) carModel.setAttribute('fill', car.color);
 }

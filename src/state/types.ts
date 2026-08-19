@@ -20,6 +20,7 @@ export interface State {
   createColor: string,
   updateColor: string,
   carsCount: number,
+  selectedId: number | null,
 }
 export interface Car {
   name: string,
