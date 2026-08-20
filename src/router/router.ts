@@ -5,22 +5,17 @@ import { switchToWinners} from "../views/winners/build-winners";
 type RouteHandler = () => void; 
 
 const routes: Record<string, RouteHandler> = {
-  '/': switchToGarage,
-  '/garage': switchToGarage,
-  '/winners': switchToWinners,
+  '#/garage': switchToGarage,
+  '#/winners': switchToWinners,
 }
 
 const mainGarage = document.querySelector('#garage');
 const mainWinners = document.querySelector('#winners');
 
-const getNormalizedPath = (): string => {
-  const base = import.meta.env.BASE_URL;
-  return globalThis.location.pathname.replace(base, '/');
-};
-
-function render(path: string): void{
-  const handler = routes[path] || routes['/garage'];
-  if(path === '/garage'){
+function render(hash: string): void{
+  const currentHash = Object.hasOwn(routes, hash) ? hash : '#/garage';
+  const handler = routes[currentHash];
+  if(currentHash === '/garage'){
     mainWinners?.classList.add('hidden');
     mainGarage?.classList.remove('hidden');
   } else{
@@ -36,25 +31,20 @@ export function initRouter(){
     if(!(target instanceof HTMLElement)) return;
     const button = target.closest<HTMLElement>('.button');
     if(!button) return;
-    event.preventDefault();
-
-    const base = import.meta.env.BASE_URL;
 
     if(button.dataset.action === 'toGarage'){
-      history.pushState(null, '', `${base}garage`);
+      globalThis.location.hash = '#/garage';
     } else if (button.dataset.action === 'toWinners'){
-      history.pushState(null, '', `${base}winners`);
+      globalThis.location.hash = '#/winners';
     }
-    render(getNormalizedPath());
   });
 
-  globalThis.addEventListener('popstate', () => {
-    render(getNormalizedPath());
+  globalThis.addEventListener('hashchange', () => {
+    render(globalThis.location.hash);
   });
 
-  const currentPath = getNormalizedPath();
-  if(currentPath === '/' || currentPath === ''){
-    history.replaceState(null, '', `${import.meta.env.BASE_URL}garage`);
+  if (!globalThis.location.hash || globalThis.location.hash === '#/') {
+    globalThis.location.hash = '#/garage';
   }
-  render(getNormalizedPath());
+  render(globalThis.location.hash);
 }
