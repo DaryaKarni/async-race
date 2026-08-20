@@ -9,8 +9,15 @@ const routes: Record<string, RouteHandler> = {
   '/garage': switchToGarage,
   '/winners': switchToWinners,
 }
+
 const mainGarage = document.querySelector('#garage');
 const mainWinners = document.querySelector('#winners');
+
+const getNormalizedPath = (): string => {
+  const base = import.meta.env.BASE_URL;
+  return globalThis.location.pathname.replace(base, '/');
+};
+
 function render(path: string): void{
   const handler = routes[path] || routes['/garage'];
   if(path === '/garage'){
@@ -30,20 +37,24 @@ export function initRouter(){
     const button = target.closest<HTMLElement>('.button');
     if(!button) return;
     event.preventDefault();
+
+    const base = import.meta.env.BASE_URL;
+
     if(button.dataset.action === 'toGarage'){
-      history.pushState(null, '', '/garage');
+      history.pushState(null, '', `${base}garage`);
     } else if (button.dataset.action === 'toWinners'){
-      history.pushState(null, '', '/winners');
+      history.pushState(null, '', `${base}winners`);
     }
-    render(globalThis.location.pathname);
+    render(getNormalizedPath());
   });
 
   globalThis.addEventListener('popstate', () => {
-    render(globalThis.location.pathname);
+    render(getNormalizedPath());
   });
 
-  if(globalThis.location.pathname === '/' || globalThis.location.pathname === ''){
-    history.replaceState(null, '', '/garage');
+  const currentPath = getNormalizedPath();
+  if(currentPath === '/' || currentPath === ''){
+    history.replaceState(null, '', `${import.meta.env.BASE_URL}garage`);
   }
   render(globalThis.location.pathname);
 }
