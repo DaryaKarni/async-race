@@ -27,16 +27,16 @@ card.innerHTML = `
 container?.append(card);
 }
 
-export function removeCarTrack(id: string){
-  const card = document.querySelector(`#${CSS.escape(id)}`);
-  card?.remove();
-}
+// export function removeCarTrack(id: string){
+//   const card = document.querySelector(`#${CSS.escape(id)}`);
+//   card?.remove();
+// }
 
-export function updateCarTrack(car: Car){
-  const id = car.id;
-  const card = document.querySelector(`#${CSS.escape(String(id))}`);
-  const carName = card?.querySelector(".car-name");
-  const carModel = card?.querySelector<SVGPathElement>(":scope path");
-  if(carName) carName.textContent = car.name;
-  if(carModel) carModel.setAttribute('fill', car.color);
-}
+// export function updateCarTrack(car: Car){
+//   const id = car.id;
+//   const card = document.querySelector(`#${CSS.escape(String(id))}`);
+//   const carName = card?.querySelector(".car-name");
+//   const carModel = card?.querySelector<SVGPathElement>(":scope path");
+//   if(carName) carName.textContent = car.name;
+//   if(carModel) carModel.setAttribute('fill', car.color);
+// }

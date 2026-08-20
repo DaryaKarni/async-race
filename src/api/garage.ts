@@ -3,24 +3,24 @@
 import { apiAddress, totalCarsGarage } from "../constants"
 import { Car, Data, DataParameters } from "../state/types";
 
-export async function getCars(page: number = 1, limit: string = totalCarsGarage): Promise<Data>{
+export async function getCars(page: number = 1, limit: number = totalCarsGarage): Promise<Data<Car>>{
   try{
     const url = `${apiAddress}/garage?_page=${page}&_limit=${limit}`;
     const response = await fetch(url, { method: "GET"});
     if(!response.ok){
       throw new Error(`HTTP error in get! status: ${response.status}`);
     }
-    const cars = await response.json();
+    const cars: Car[] = await response.json();
     const totalCount = response.headers.get("X-Total-Count") ?? '0';
     return {
       items: cars,
-      count: totalCount,
+      count: Number(totalCount),
     }
   }catch(error){
     console.log("Error in getting cars api:", error);
     return {
       items: [],
-      count: "0",
+      count: 0,
     }
   }
 }
@@ -60,7 +60,7 @@ export async function removeCar(id: number): Promise<void>{
   }
 }
 
-export async function updateCar(id: number, data: DataParameters){
+export async function updateCar(id: number, data: DataParameters): Promise<Car | undefined>{
   try{
     const url = `${apiAddress}/garage/${id}`;
     const response = await fetch (url, {

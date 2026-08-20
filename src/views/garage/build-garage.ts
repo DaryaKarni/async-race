@@ -1,11 +1,15 @@
 import { createCar, getCars, removeCar, updateCar } from "../../api/garage"
+import { removeWinner } from "../../api/winners";
 
 import { store } from "../../state/app-state";
 import { Car, State } from "../../state/types";
-import { removeCarTrack, renderCarTrack, updateCarTrack } from "./car-card";
+import { removeWinnerField } from "../winners/winner-field";
+import { renderCarTrack} from "./car-card";
 
-export async function updateGarage(): Promise<void> {
-  const object = await getCars();
+export async function updateGarage(page: number = 1, limit: number = 7): Promise<void> {
+  const container = document.querySelector('.cars-container');
+  container?.replaceChildren();
+  const object = await getCars(page, limit);
   const cars = object.items;
   const count: number = Number(object.count);
   store.dispatch((previousState) => {
@@ -20,10 +24,6 @@ export async function updateGarage(): Promise<void> {
     carsCount: count,
     }
   });
-  const countText = document.querySelector('#cars-number');
-  if(countText){
-    countText.textContent = String(count);
-  }
 }
 const panel = document.querySelector('#panel');
 const inputCreate = panel?.querySelector('#create-input');
@@ -98,9 +98,41 @@ async function createCarHandler(state: State): Promise<void>{
     name: state.createInput,
     color: state.createColor,
   });
-  if (car) renderCarTrack(car);
+  if (car) await updateGarage(state.garagePage);
+  store.dispatch((previousState) => {
+    return {...previousState, carsCount: state.carsCount + 1};
+  });
 }
+async function updateCarHandler(state: State): Promise<void>{
+  if(state.selectedId === null) return;
+  const updatedCar = await updateCar(state.selectedId, {name: state.updateInput, color: state.updateColor});
+  if(updatedCar) await updateGarage(state.garagePage);
+    store.dispatch((previousState) => {
+    return {...previousState, selectedId: null};
+  });
+}
+const randomCarNames = ['Toyota','Ford','BMW','Honda','Chevrolet','Audi','Nissan','Hyundai','Subaru','Kia'];
+const randomCarModels = ['Civic', 'Mustang', 'Corvette', 'Camry', 'Carrera', 'Wrangler', 'Golf', 'Charger', 'Prius', 'Outback'];
 
+async function generateCarsHandler(state: State): Promise<void>{
+  store.dispatch((previousState) => {
+    return {...previousState, carsCount: previousState.carsCount + 100};
+  });
+  for(let index=0; index<100; index++){
+    const randomColor = `#${Math.floor(Math.random() * 16_777_215).toString(16).padStart(6,'0')}`;
+    const carName = randomCarNames[Math.floor(Math.random() * randomCarNames.length)];
+    const carModel = randomCarModels[Math.floor(Math.random() * randomCarModels.length)];
+    const randomName = carName + " " + carModel;
+    const data = {
+      name: randomName,
+      color: randomColor,
+    }
+    const newCar = await createCar(data);
+    if(newCar){
+      await updateGarage(state.garagePage);
+    }
+  }
+}
 async function panelClickHandler(event: Event): Promise<void>{
   const button = event.target;
   if(!(button instanceof HTMLButtonElement)) return;
@@ -111,13 +143,7 @@ async function panelClickHandler(event: Event): Promise<void>{
       break;
     } 
     case "update": {
-      if(state.selectedId !== null){
-        const updatedCar = await updateCar(state.selectedId, {name: state.updateInput, color: state.updateColor});
-        if(updatedCar) updateCarTrack(updatedCar);
-        store.dispatch((previousState) => {
-          return {...previousState, selectedId: null};
-        });
-      }
+      updateCarHandler(state)
       break;
     }
     case "race": {
@@ -127,6 +153,7 @@ async function panelClickHandler(event: Event): Promise<void>{
       break;
     }
     case "generate-cars": {
+      generateCarsHandler(state);
       break;
     }
     default: {
@@ -134,21 +161,43 @@ async function panelClickHandler(event: Event): Promise<void>{
     }
   }
 }
+async function handleRemove(id: number, state: State){
+  store.dispatch((previousState: State) => {
+    return {
+    ...previousState, 
+    carsCount: previousState.carsCount - 1,
+    };
+      });
+    await removeCar(id);
+    await updateGarage(state.garagePage);
 
+    const isWinner = state.winners.some((winner) => winner.id === id);
+    if(isWinner){
+      await removeWinner(id);
+      removeWinnerField(id);
+      store.dispatch((previousState: State) => {
+      return {
+        ...previousState, 
+        winners: previousState.winners.filter((winner) => winner.id !== id),
+      };
+    });
+  }
+}
 async function raceClickHandler(event: Event): Promise<void>{
   const button = event.target;
   if(!(button instanceof HTMLButtonElement)) return;
+  const state = store.getState();
+  const id = Number(button.id);
   switch(button.dataset.action){
     case "select": {
       store.dispatch((previousState) => {
-        console.log(button.id);
-        return {...previousState, selectedId: Number(button.id)};
+        console.log(id);
+        return {...previousState, selectedId: id};
       });
       break;
     }
     case "remove": {
-      await removeCar(Number(button.id));
-      removeCarTrack(button.id);
+      await handleRemove(id, state);
       break;
     }
     case "drive": {
@@ -157,6 +206,29 @@ async function raceClickHandler(event: Event): Promise<void>{
     case "stop": {
       break;
     }
+  }
+}
+async function paginationHandler(event: Event): Promise<void>{
+  const target = event.target;
+  if(!(target instanceof HTMLButtonElement)) return;
+  const state = store.getState();
+  const currentPage = state.garagePage;
+  if(target.id === "garage-prev-button"){
+    store.dispatch((previousState) => {
+      return {
+      ...previousState,
+      garagePage: currentPage - 1,
+      }
+    });
+    await updateGarage(currentPage - 1);
+  } else{
+    store.dispatch((previousState) => {
+      return {
+      ...previousState,
+      garagePage: currentPage + 1,
+      }
+    });
+    await updateGarage(currentPage + 1);
   }
 }
 export function initGarageControls(): void {
@@ -168,6 +240,10 @@ export function initGarageControls(): void {
   const carsContainer = document.querySelector('.cars-container');
   if(!carsContainer) return;
   carsContainer.addEventListener('click', raceClickHandler);
+
+  const paginationButtons = document.querySelector('.pagination-block');
+  if(!paginationButtons) return;
+  paginationButtons.addEventListener('click', paginationHandler)
 }
 
 export function switchToGarage(){

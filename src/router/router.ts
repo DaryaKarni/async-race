@@ -1,13 +1,13 @@
 import { switchToGarage } from "../views/garage/build-garage";
 
-import { updateWinners } from "../views/winners/build-winners";
+import { switchToWinners} from "../views/winners/build-winners";
 
 type RouteHandler = () => void; 
 
 const routes: Record<string, RouteHandler> = {
   '/': switchToGarage,
   '/garage': switchToGarage,
-  '/winners': updateWinners,
+  '/winners': switchToWinners,
 }
 const mainGarage = document.querySelector('#garage');
 const mainWinners = document.querySelector('#winners');

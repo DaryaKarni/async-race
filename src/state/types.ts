@@ -20,18 +20,28 @@ export interface State {
   createColor: string,
   updateColor: string,
   carsCount: number,
+  winnersCount: number,
   selectedId: number | null,
+  tableNumber: number,
+  winners: Winner[],
 }
 export interface Car {
   name: string,
   color: string,
   id: number,
 }
-export interface Data {
-  items: Car[],
-  count: string,
+export interface Data<T> {
+  items: T[],
+  count: number,
 }
 export interface DataParameters{
   name: string,
   color: string,
 }
+export interface WinnerDataParameters{
+  id: number,
+  wins: number,
+  time: number
+}
+export type sort = 'id' | 'wins' | 'time';
+export type order = 'ASC' | 'DESC';

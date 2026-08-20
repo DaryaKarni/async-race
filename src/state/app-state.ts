@@ -1,4 +1,4 @@
-import { State } from "./types";
+import { State} from "./types";
 
 const dafaultState: State = {
   view: "garage",
@@ -9,7 +9,10 @@ const dafaultState: State = {
   createColor: '#ffff',
   updateColor: '#ffff',
   carsCount: 0,
+  winnersCount: 0,
   selectedId: null,
+  tableNumber: 1,
+  winners: [],
 }
 
 function createStore(state: State){
