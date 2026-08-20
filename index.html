@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Async Race</title>
+    <script type="module" crossorigin src="/async-race/assets/index-CeBSgPdh.js"></script>
+    <link rel="stylesheet" crossorigin href="/async-race/assets/index-DF5iuq4O.css">
+  </head>
+  <body>
+    <header>
+      <nav class="nav-buttons">
+        <button data-action="toGarage" class="button green-button">To Garage</button>
+        <button data-action="toWinners" class="button green-button">To Winners</button>
+      </nav>
+    </header>
+    <main id="garage" class="garage">
+      <section id="panel">
+        <div id="create-car-block" class="panel-row">
+          <input id="create-input" class="input-field">
+          <input type="color" id="create-color" class="color-button" value="#ffffff">
+          <button data-action="create" class="button blue-button">Create</button>
+        </div>
+        <div id="update-car-block" class="panel-row">
+          <input id="update-input" class="input-field">
+          <input type="color" id="update-color" class="color-button" value="#ffffff">
+          <button data-action="update" class="button blue-button">Update</button>
+        </div>
+        <div id="down-panel-buttons" class="panel-row">
+          <button data-action="race" class="button green-button">Race</button>
+          <button data-action="reset" class="button green-button">Reset</button>
+          <button data-action="generate-cars" class="button blue-button">Generate Cars</button>
+        </div>
+      </section>
+      <section id="garage-section">
+        <h1>Garage (<span id="cars-number">?</span>)</h1>
+        <h2>Page #<span id="garage-page-number">?</span></h2>
+        <div class="cars-container">
+
+        </div>
+        <div class="pagination-block">
+          <button id="garage-prev-button" class="prev-button button">Prev</button>
+          <button id="garage-next-button" class="next-button button">Next</button>
+        </div>
+      </section>
+    </main>
+    <main id="winners" class="winners hidden">
+     <section id="winners-section">
+        <h1>Winners (<span id="winners-number">?</span>)</h1>
+        <h2>Page #<span id="winners-page-number"></span></h2>
+        <table id="winners-table">
+          <thead>
+            <tr>
+              <th>Number</th>
+              <th>Car</th>
+              <th>Name</th>
+              <th>Wins</th>
+              <th>Best time (seconds)</th>
+            </tr>
+          </thead>
+          <tbody id="table-container">
+
+          </tbody>
+        </table>
+        <div class="pagination-block">
+          <button id="garage-prev-button" class="prev-button button">Prev</button>
+          <button id="garage-next-button" class="next-button button">Next</button>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
