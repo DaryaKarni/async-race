@@ -56,5 +56,5 @@ export function initRouter(){
   if(currentPath === '/' || currentPath === ''){
     history.replaceState(null, '', `${import.meta.env.BASE_URL}garage`);
   }
-  render(globalThis.location.pathname);
+  render(getNormalizedPath());
 }
