@@ -15,7 +15,7 @@ const mainWinners = document.querySelector('#winners');
 function render(hash: string): void{
   const currentHash = Object.hasOwn(routes, hash) ? hash : '#/garage';
   const handler = routes[currentHash];
-  if(currentHash === '/garage'){
+  if(currentHash === '#/garage'){
     mainWinners?.classList.add('hidden');
     mainGarage?.classList.remove('hidden');
   } else{
